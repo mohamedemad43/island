@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import com.oasisfeng.android.base.Versions
-import com.oasisfeng.common.app.hasRequestedLegacyExternalStorage
+import com.oasisfeng.island.util.hasRequestedLegacyExternalStorage
 import com.oasisfeng.island.data.IslandAppInfo
 import com.oasisfeng.island.data.IslandAppListProvider
 import com.oasisfeng.island.mobile.R

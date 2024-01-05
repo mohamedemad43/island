@@ -1,4 +1,4 @@
-package com.oasisfeng.island.installer.analyzer
+package com.oasisfeng.island.analyzer
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -10,11 +10,13 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
 import android.os.Build.VERSION_CODES.Q
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.jaredrummler.apkparser.parser.*
 import com.jaredrummler.apkparser.struct.AndroidConstants
 import com.jaredrummler.apkparser.struct.xml.XmlNodeStartTag
-import com.oasisfeng.island.installer.AppInstallerUtils.setRequestedLegacyExternalStorage
+import com.oasisfeng.island.util.Hacks
+import com.oasisfeng.island.util.PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE
 import com.oasisfeng.java.utils.IoUtils
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -95,6 +97,9 @@ object ApkAnalyzer {
 			var len: Int; while (read(buf).also { len = it } != -1) output.write(buf, 0, len)
 			ByteBuffer.wrap(output.toByteArray()) }
 	}
+
+	@RequiresApi(Q) fun ApplicationInfo.setRequestedLegacyExternalStorage() =
+		Hacks.ApplicationInfo_privateFlags.set(this, PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE)
 
 	private const val TAG = "Island.AA"
 }

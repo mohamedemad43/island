@@ -30,14 +30,6 @@ internal object AppInstallerUtils {
 		return DevicePolicies(context).run { isProfileOwner && (enableSystemAppByIntent(intent)
 				|| IslandManager.ensureAppFreeToLaunch(context, resolve.activityInfo.packageName).isEmpty()) }
 	}
-
-	@JvmStatic fun ApplicationInfo.hasRequestedLegacyExternalStorage() = SDK_INT == Q
-			&& PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE.let { Hacks.ApplicationInfo_privateFlags.get(this)?.and(it) == it }
-
-	@RequiresApi(Q) fun ApplicationInfo.setRequestedLegacyExternalStorage() =
-			Hacks.ApplicationInfo_privateFlags.set(this, PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE)
-
-	private const val PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE = 1 shl 29       // Hidden in PackageManager
 }
 
 @Parcelize data class AppInstallInfo(val caller: String, val callerUid: Int,

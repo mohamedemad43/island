@@ -28,6 +28,7 @@ import static com.oasisfeng.island.installer.AppInstallInfo.Mode.CLONE;
 import static com.oasisfeng.island.installer.AppInstallInfo.Mode.INHERIT;
 import static com.oasisfeng.island.installer.AppInstallInfo.Mode.INSTALL;
 import static com.oasisfeng.island.installer.AppInstallInfo.Mode.UPDATE;
+import static com.oasisfeng.island.util.AppInfoKt.hasRequestedLegacyExternalStorage;
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.SuppressLint;
@@ -68,7 +69,7 @@ import com.oasisfeng.android.widget.Toasts;
 import com.oasisfeng.island.Config;
 import com.oasisfeng.island.analytics.Analytics;
 import com.oasisfeng.island.appops.AppOpsCompat;
-import com.oasisfeng.island.installer.analyzer.ApkAnalyzer;
+import com.oasisfeng.island.analyzer.ApkAnalyzer;
 import com.oasisfeng.island.util.CallerAwareActivity;
 import com.oasisfeng.island.util.DevicePolicies;
 import com.oasisfeng.island.util.ModuleContext;
@@ -174,7 +175,7 @@ public class AppInstallerActivity extends CallerAwareActivity {
 					mInstallInfo.setVersionName(info.versionName);
 					mInstallInfo.setAppLabel(app.loadLabel(getPackageManager())); // loadLabel() is overridden in ApplicationInfoEx
 					mInstallInfo.setTargetSdkVersion(app.targetSdkVersion);
-					mInstallInfo.setRequestedLegacyExternalStorage(AppInstallerUtils.hasRequestedLegacyExternalStorage(app));
+					mInstallInfo.setRequestedLegacyExternalStorage(hasRequestedLegacyExternalStorage(app));
 				}
 
 				mSessionId.thenAccept(sessionId -> {

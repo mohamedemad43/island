@@ -18,9 +18,9 @@ import android.os.UserHandle
 import android.provider.Settings
 import com.oasisfeng.android.base.Versions
 import com.oasisfeng.android.content.IntentCompat
-import com.oasisfeng.island.installer.AppInstallerUtils.hasRequestedLegacyExternalStorage
 import com.oasisfeng.island.notification.NotificationIds
 import com.oasisfeng.island.util.Users
+import com.oasisfeng.island.util.hasRequestedLegacyExternalStorage
 
 
 /**
