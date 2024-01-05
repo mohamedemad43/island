@@ -62,7 +62,7 @@ object ApkAnalyzer {
 				super.onStartTag(xmlNodeStartTag)
 				if (xmlNodeStartTag.name == "manifest")
 					split = xmlNodeStartTag.attributes.get("split")
-				if (SDK_INT == Q && xmlNodeStartTag.name == "application")
+				else if (SDK_INT >= Q && xmlNodeStartTag.name == "application")
 					requestLegacyExternalStorage = xmlNodeStartTag.attributes.getBoolean("requestLegacyExternalStorage", false)
 			}
 		}
