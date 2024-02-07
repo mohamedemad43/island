@@ -6,6 +6,7 @@ import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.ActionBar
 import android.app.AlertDialog
+import android.app.Fragment
 import android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE
 import android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_PROFILE
 import android.appwidget.AppWidgetManager
@@ -15,6 +16,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
 import android.content.Intent.ACTION_MY_PACKAGE_REPLACED
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_PERMISSIONS
 import android.content.pm.PackageManager.MATCH_UNINSTALLED_PACKAGES
 import android.graphics.Typeface.BOLD
@@ -159,10 +161,10 @@ import com.oasisfeng.island.util.DevicePolicies.PreferredActivity
                     else policies.invoke(DPM::removeCrossProfileWidgetProvider, pkgs[which])
                 }.setNeutralButton(R.string.action_close, null).show() }}
 
-        setupNotificationChannelTwoStatePreference(R.string.key_island_watcher, SDK_INT >= P && ! Users.isParentProfile(), NotificationIds.IslandWatcher) {
+        setupNotificationChannelTwoStatePreference(this, R.string.key_island_watcher, SDK_INT >= P && ! Users.isParentProfile(), NotificationIds.IslandWatcher) {
             if (SDK_INT >= Q) summary = getString(R.string.pref_island_watcher_summary) +
                     "\n" + getString(R.string.pref_island_watcher_summary_appendix_api29) }
-        setupNotificationChannelTwoStatePreference(R.string.key_app_watcher, SDK_INT >= O, NotificationIds.IslandAppWatcher)
+        setupNotificationChannelTwoStatePreference(this, R.string.key_app_watcher, SDK_INT >= O, NotificationIds.IslandAppWatcher)
 
         setup<Preference>(R.string.key_reprovision) {
             if (Users.isParentProfile() && ! isProfileOrDeviceOwner) return@setup remove(this)
@@ -194,12 +196,16 @@ import com.oasisfeng.island.util.DevicePolicies.PreferredActivity
             } else remove(this) }
     }
 
-    private fun setupNotificationChannelTwoStatePreference(@StringRes key: Int, visible: Boolean,
+    private fun setupNotificationChannelTwoStatePreference(fragment: Fragment, @StringRes key: Int, visible: Boolean,
             notificationId: NotificationIds, block: (TwoStatePreference.() -> Unit)? = null) {
         setup<TwoStatePreference>(key) {
             if (visible && SDK_INT >= O) {
                 isChecked = ! notificationId.isBlocked(context)
-                setOnPreferenceChangeListener { _, _ -> true.also { context.startActivity(notificationId.buildChannelSettingsIntent(context)) }}
+                setOnPreferenceChangeListener { _, _ -> true.also {
+                    if (context.checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+                        fragment.requestPermissions(arrayOf(POST_NOTIFICATIONS), 0)
+                    fragment.startActivity(notificationId.buildChannelSettingsIntent(context))
+                }}
             } else remove(this)
             block?.invoke(this)
         }
