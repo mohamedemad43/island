@@ -13,6 +13,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- UninstallHelper.UninstallReceiver -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" /> <!-- Required to start ACTION_UNINSTALL_PACKAGE since Android P -->
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Notifications. This required in Android 13, see https://github.com/pppscn/SmsForwarder/issues/255 -->
+    
+    
     <application android:label="Island - Mobile"
                  android:icon="@mipmap/ic_launcher"
                  android:roundIcon="@mipmap/ic_launcher_round"
