@@ -1,12 +1,8 @@
 package com.oasisfeng.island.console.apps
 
 import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-import android.Manifest.permission.QUERY_ALL_PACKAGES
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.GET_PERMISSIONS
-import android.content.pm.PackageManager.MATCH_UNINSTALLED_PACKAGES
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.Q
@@ -54,18 +50,13 @@ object AppExtraInfo {
 		}
 	}
 
-	@Composable private fun addExtraInfo(context: Context, info: ApplicationInfo = buildPreviewAppInfo()) {
+	@Composable private fun addExtraInfo(context: Context, info: IslandAppInfo = buildPreviewAppInfo()) {
 		val theme = context.resources.newTheme().apply { applyStyle(R.style.AppTheme_Dark, true) }
 		val textColor = Color(context.resources.getColor(R.color.textSecondary, theme))
 
-		val canQueryAllPackages = SDK_INT <= Q || info.targetSdkVersion > Q && try {
-			context.packageManager.getPackageInfo(info.packageName, GET_PERMISSIONS or MATCH_UNINSTALLED_PACKAGES)
-			.requestedPermissions.contains(QUERY_ALL_PACKAGES)
-		} catch (e: PackageManager.NameNotFoundException) { false }     // Should not happen
-
 		val canManageExternalStorage = SDK_INT > Q && info.targetSdkVersion > Q
 				&& context.checkPermission(MANAGE_EXTERNAL_STORAGE, 0, info.uid) == PERMISSION_GRANTED
-		addExtraInfo(textColor, info, canQueryAllPackages, canManageExternalStorage)
+		addExtraInfo(textColor, info, info.canQueryAllPackages(), canManageExternalStorage)
 	}
 }
 
@@ -82,7 +73,7 @@ private fun addExtraInfo(textColor: Color = Color(0xffaaaaaa), info: Application
 				if (canQueryAllPackages)
 					Bold(stringResource(R.string.filter_can_query_all_apps))
 				if (canManageExternalStorage) {
-					Bold(stringResource(R.string.filter_can_manage_external_storage))
+					Bold(stringResource(R.string.filter_can_manage_external_storage_long))
 				} else if (targetSdk > Q || (targetSdk == Q && !info.hasRequestedLegacyExternalStorage()))
 					append(stringResource(R.string.filter_scoped_storage))
 			})

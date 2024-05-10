@@ -1,9 +1,13 @@
 package com.oasisfeng.island.data;
 
+import static android.Manifest.permission.QUERY_ALL_PACKAGES;
 import static android.content.Context.LAUNCHER_APPS_SERVICE;
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.Q;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toSet;
@@ -60,6 +64,13 @@ public class IslandAppInfo extends AppInfo {
 	public boolean isCritical() {
 		return ((IslandAppListProvider) mProvider).isCritical(packageName);
 	}
+
+	public boolean canQueryAllPackages() { return mCanQueryAllPackages.get(); }
+	private boolean checkCanQueryAllPackages() {
+		return SDK_INT <= Q || targetSdkVersion <= Q
+				|| context().checkPermission(QUERY_ALL_PACKAGES, -1, uid) == PERMISSION_GRANTED;
+	}
+	private final Supplier<Boolean> mCanQueryAllPackages = Suppliers.memoize(this::checkCanQueryAllPackages);
 
 	/** Is launchable (even if hidden) */
 	@Override public boolean isLaunchable() { return mIsLaunchable.get(); }
