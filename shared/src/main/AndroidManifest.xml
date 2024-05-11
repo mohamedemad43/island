@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" android:maxSdkVersion="25" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_PROFILES" />
     <uses-permission android:name="android.permission.GET_APP_OPS_STATS" tools:ignore="ProtectedPermissions" /> <!-- AppOpsCompat -->
+    <uses-permission android:name="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application android:name="com.oasisfeng.island.IslandApplication" tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
 
