@@ -33,7 +33,6 @@ internal object AppInstallerUtils {
 }
 
 @Parcelize data class AppInstallInfo(val caller: String, val callerUid: Int,
-
                                      var mode: Mode = Mode.INSTALL,
                                      var appId: String? = null,
                                      var appLabel: CharSequence? = null,

@@ -154,7 +154,7 @@ public class AppListViewModel extends BaseAppListViewModel<AppViewModel> {
 		if (getFilterCanQueryAllPackages().getValue() == Boolean.TRUE)
 			filters = filters.and(IslandAppInfo::canQueryAllPackages);
 		final String text = getQueryText().getValue();
-		if (text != null && text.length() != 0) {
+		if (text != null && ! text.isEmpty()) {
 			if (text.startsWith("package:")) {
 				final String pkg = text.substring(8);
 				filters = filters.and(app -> app.packageName.equals(pkg));

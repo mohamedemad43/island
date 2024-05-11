@@ -39,7 +39,16 @@ typealias DPM = DevicePolicyManager
  *
  * Created by Oasis on 2016/6/14.
  */
-class DevicePolicies {
+class DevicePolicies(context: Context, val manager: DevicePolicyManager) {
+
+    private val mAppContext: Context
+
+    init {
+    	mAppContext = context.applicationContext
+        cacheDeviceAdminComponent(context)
+    }
+
+    constructor(context: Context) : this(context, manager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager)
 
     val isManagedProfile: Boolean; get() = manager.isManagedProfile(sAdmin)
 
@@ -130,19 +139,10 @@ class DevicePolicies {
         AppOpsHelper(mAppContext).setMode(Modules.MODULE_ENGINE, op, AppOpsManager.MODE_ALLOWED, Process.myUid())
     }
 
-    constructor(context: Context) {
-        mAppContext = context.applicationContext
-        manager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        cacheDeviceAdminComponent(context)
-    }
+    @RequiresApi(P) private constructor(context: Context, profile: UserHandle) : this(createProfileAppContext(context, profile))
 
-    @RequiresApi(P) private constructor(context: Context, profile: UserHandle) {
-        val profileAppInfo = LauncherAppsCompat(context).getApplicationInfoNoThrows(Modules.MODULE_ENGINE, 0, profile)
-            ?: context.applicationInfo.apply { uid = UserHandles.getUid(profile.toId(), UserHandles.getAppId(Process.myUid())) }
-        mAppContext = try { Hacks.Context_createApplicationContext.invoke(profileAppInfo, 0).on(context) }
-        catch (e: NameNotFoundException) { throw IllegalStateException(e) } // Should never happen
-        manager = mAppContext.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        cacheDeviceAdminComponent(context)
+    fun parent(): DevicePolicies {
+        return DevicePolicies(mAppContext, manager.getParentProfileInstance(sAdmin))
     }
 
     /* Helpers for general APIs in DevicePolicyManager */
@@ -159,9 +159,6 @@ class DevicePolicies {
     operator fun <A, B, T> invoke(callee: Function4<DPM, ComponentName, A, B, T>, a: A, b: B): T = callee.invoke(manager, sAdmin, a, b)
     operator fun <A, B, C, T> invoke(callee: Function5<DPM, ComponentName, A, B, C, T>, a: A, b: B, c: C): T = callee.invoke(manager, sAdmin, a, b, c)
     operator fun <A, B, C, D, T> invoke(callee: Function6<DPM, ComponentName, A, B, C, D, T>, a: A, b: B, c: C, d: D): T = callee.invoke(manager, sAdmin, a, b, c, d)
-
-    val manager: DevicePolicyManager
-    private val mAppContext: Context
 
     enum class PreferredActivity(private val action: String, decorator: IntentFilter.() -> Unit) {
         Home(Intent.ACTION_MAIN, { addCategory(Intent.CATEGORY_HOME); addCategory(Intent.CATEGORY_DEFAULT) }),
@@ -208,6 +205,13 @@ class DevicePolicies {
     companion object {
 
         const val ACTION_PACKAGE_UNFROZEN = "com.oasisfeng.island.action.PACKAGE_UNFROZEN"
+
+        private fun createProfileAppContext(context: Context, profile: UserHandle): Context {
+            val profileAppInfo = LauncherAppsCompat(context).getApplicationInfoNoThrows(Modules.MODULE_ENGINE, 0, profile)
+                ?: context.applicationInfo.apply { uid = UserHandles.getUid(profile.toId(), UserHandles.getAppId(Process.myUid())) }
+            return try { Hacks.Context_createApplicationContext.invoke(profileAppInfo, 0).on(context) }
+            catch (e: NameNotFoundException) { throw IllegalStateException(e) } // Should never happen
+        }
 
         @JvmStatic fun getProfileOwnerAsUser(context: Context, profile: UserHandle): Optional<ComponentName>? = when {
             SDK_INT > P -> null
