@@ -53,9 +53,7 @@ object AppExtraInfo {
 		val theme = context.resources.newTheme().apply { applyStyle(R.style.AppTheme_Dark, true) }
 		val textColor = Color(context.resources.getColor(R.color.textSecondary, theme))
 
-		val canManageExternalStorage = SDK_INT > Q && info.targetSdkVersion > Q
-				&& context.checkPermission(MANAGE_EXTERNAL_STORAGE, 0, info.uid) == PERMISSION_GRANTED
-		addExtraInfo(textColor, info, info.canQueryAllPackages(), canManageExternalStorage)
+		addExtraInfo(textColor, info, info.canQueryAllPackages(), info.canManageExternalStorage())
 	}
 }
 

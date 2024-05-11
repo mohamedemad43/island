@@ -74,7 +74,7 @@
 
     <string name="filter_include_hidden_system_components">+ 不可见的系统组件</string>
     <string name="filter_can_query_all_apps">可探知所在空间内的其它应用</string>
-    <string name="filter_can_manage_external_storage">可访问所在空间内的共享存储（包括其中的私人媒体文件）</string>
+    <string name="filter_can_manage_external_storage_long">可访问所在空间内的共享存储（包括其中的私人媒体文件）</string>
     <string name="filter_scoped_storage">支持分区存储（隐私友好）</string>
     <string name="info_target_sdk">适配 Android %s</string>
 

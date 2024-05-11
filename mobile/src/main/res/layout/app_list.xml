@@ -65,6 +65,15 @@
                     android:visible="@bool/since_api_31" />
 
                 <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:chipStrokeColor="@color/accent" app:chipStrokeWidth="2dp"
+                    app:chipIconTint="@color/accent" app:rippleColor="@color/accent" app:chipBackgroundColor="@color/chip_background_color"
+                    app:checkedIconVisible="false" android:checked="@={apps.getFilterCanManageExternalStorage()}"
+                    android:text="@string/filter_can_manage_external_storage"
+                    android:visible="@bool/since_api_29" />
+
+                <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

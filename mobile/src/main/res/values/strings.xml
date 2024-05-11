@@ -76,7 +76,8 @@ the sandbox environment. Island never collect data related to your privacy, plea
 
     <string name="filter_include_hidden_system_components">+ Hidden System Components</string>
     <string name="filter_can_query_all_apps">Can see other inland apps</string>
-    <string name="filter_can_manage_external_storage">Can access inland shared storage (including personal media inside)</string>
+    <string name="filter_can_manage_external_storage">Can access inland shared storage</string>
+    <string name="filter_can_manage_external_storage_long">Can access inland shared storage (including personal media inside)</string>
     <string name="filter_scoped_storage">Scoped Storage (privacy-friendly)</string>
     <string name="info_target_sdk">Target Android %s</string>
 

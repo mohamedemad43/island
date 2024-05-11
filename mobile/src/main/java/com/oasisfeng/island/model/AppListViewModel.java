@@ -72,6 +72,7 @@ public class AppListViewModel extends BaseAppListViewModel<AppViewModel> {
 	private static final long QUERY_TEXT_DELAY = 300;	// The delay before typed query text is applied
 	private static final String STATE_KEY_FILTER_HIDDEN_SYSTEM_APPS = "filter.hidden_sys";
 	private static final String STATE_KEY_FILTER_CAN_QUERY_ALL_PACKAGES = "filter.can_query_all_packages";
+	private static final String STATE_KEY_FILTER_CAN_MANAGE_STORAGE = "filter.can_manage_storage";
 
 	/** Workaround for menu res reference not supported by data binding */ public static @MenuRes int actions_menu = R.menu.app_actions;
 
@@ -84,6 +85,9 @@ public class AppListViewModel extends BaseAppListViewModel<AppViewModel> {
 	}
 	public MutableLiveData<Boolean> getFilterCanQueryAllPackages() {
 		return mState.getLiveData(STATE_KEY_FILTER_CAN_QUERY_ALL_PACKAGES, false);
+	}
+	public MutableLiveData<Boolean> getFilterCanManageExternalStorage() {
+		return mState.getLiveData(STATE_KEY_FILTER_CAN_MANAGE_STORAGE, false);
 	}
 
 	public interface Filter extends Predicate<IslandAppInfo> {
@@ -153,6 +157,8 @@ public class AppListViewModel extends BaseAppListViewModel<AppViewModel> {
 			filters = filters.and(app -> ! app.isSystem() || app.isInstalled() && app.isLaunchable());  // Exclude system apps without launcher activity
 		if (getFilterCanQueryAllPackages().getValue() == Boolean.TRUE)
 			filters = filters.and(IslandAppInfo::canQueryAllPackages);
+		if (getFilterCanManageExternalStorage().getValue() == Boolean.TRUE)
+			filters = filters.and(IslandAppInfo::canManageExternalStorage);
 		final String text = getQueryText().getValue();
 		if (text != null && ! text.isEmpty()) {
 			if (text.startsWith("package:")) {
@@ -230,6 +236,7 @@ public class AppListViewModel extends BaseAppListViewModel<AppViewModel> {
 		mChipsVisible.setValue(getCurrentProfile() != null && (
 				getFilterIncludeHiddenSystemApps().getValue() == Boolean.TRUE
 				|| getFilterCanQueryAllPackages().getValue() == Boolean.TRUE
+				|| getFilterCanManageExternalStorage().getValue() == Boolean.TRUE
 				|| ! TextUtils.isEmpty(getQueryText().getValue())));
 	}
 

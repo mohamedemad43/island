@@ -1,5 +1,6 @@
 package com.oasisfeng.island.data;
 
+import static android.Manifest.permission.MANAGE_EXTERNAL_STORAGE;
 import static android.Manifest.permission.QUERY_ALL_PACKAGES;
 import static android.content.Context.LAUNCHER_APPS_SERVICE;
 import static android.content.Intent.ACTION_MAIN;
@@ -71,6 +72,13 @@ public class IslandAppInfo extends AppInfo {
 				|| context().checkPermission(QUERY_ALL_PACKAGES, -1, uid) == PERMISSION_GRANTED;
 	}
 	private final Supplier<Boolean> mCanQueryAllPackages = Suppliers.memoize(this::checkCanQueryAllPackages);
+
+	public boolean canManageExternalStorage() { return mCanManageExternalStorage.get(); }
+	private boolean checkCanManageExternalStorage() {
+		return SDK_INT > Q && targetSdkVersion > Q
+				&& context().checkPermission(MANAGE_EXTERNAL_STORAGE, -1, uid) == PERMISSION_GRANTED;
+	}
+	private final Supplier<Boolean> mCanManageExternalStorage = Suppliers.memoize(this::checkCanManageExternalStorage);
 
 	/** Is launchable (even if hidden) */
 	@Override public boolean isLaunchable() { return mIsLaunchable.get(); }
