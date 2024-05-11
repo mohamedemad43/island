@@ -61,7 +61,7 @@ import kotlinx.coroutines.launch
 		val locked = context.getSystemService<UserManager>()?.isUserUnlocked == false
 		val canDeactivate = if (SDK_INT >= Q) isParentProfileOwner(context)
 			else ! locked && context.getSystemService(LauncherApps::class.java)!!.hasShortcutHostPermission()   // hasShortcutHostPermission() below throws IllegalStateException: "User N is locked or not running"
-		val canRestart = ! locked && ! policies.invoke(DPM::isUsingUnifiedPassword)
+		val canRestart = ! locked && policies.isManagedProfile && ! policies.invoke(DPM::isUsingUnifiedPassword)
 				&& policies.manager.storageEncryptionStatus == ENCRYPTION_STATUS_ACTIVE_PER_USER
 		val needsManualDeactivate = ! locked && ! canDeactivate
 		if (! canDeactivate && ! canRestart && ! needsManualDeactivate) return
