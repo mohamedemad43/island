@@ -34,3 +34,6 @@ If you found bugs, made minor improvements or translated the strings, please fee
 If you are interested in improving the functionality of Island, please create an issue first to discuss your thoughts with us, we are open to collaboration in future development.
 
 If you need new APIs for your apps to take advantage of the DPC capabilities, please feel free to create an issue to describe your app and its use case of those APIs. We are still in the early stage of building a rich set of open APIs.
+
+## Testing BrowserStack
+This project is tested with BrowserStack.
